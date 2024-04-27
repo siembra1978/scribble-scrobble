@@ -11,7 +11,7 @@ importedCSV = "Apple Music Play Activity.csv"
 keepColumns =['Artists', 'Song Name', 'Album Name','Play Duration Milliseconds', 'Album Artist']
 scriptFile = os.path.dirname(os.path.abspath(__file__))
 maxFMRows = 3000
-rateLimit = 4
+rateLimit = 10
 
 def filterCSV(inputCSV):
     df = pd.read_csv(inputCSV, nrows=maxFMRows)
