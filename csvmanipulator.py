@@ -10,11 +10,11 @@ import datetime
 importedCSV = "Apple Music Play Activity.csv"
 keepColumns =['Artists', 'Song Name', 'Album Name','Play Duration Milliseconds', 'Album Artist']
 scriptFile = os.path.dirname(os.path.abspath(__file__))
-maxFMRows = 3000
-rateLimit = 10
-
+maxFMRows = 57317
+rateLimit = 4
 def filterCSV(inputCSV):
-    df = pd.read_csv(inputCSV, nrows=maxFMRows)
+    df = pd.read_csv(inputCSV)
+    rowNum = len(df)
     df = df[df['Media Duration In Milliseconds'] > 0]
     df = df[df['Event Type'] == 'PLAY_END']
     df = df[df['End Reason Type'] != 'NOT_APPLICABLE']
@@ -31,7 +31,8 @@ def filterCSV(inputCSV):
         albumCorrection = str(row['Album Name'])
         newAlbums.append(albumCorrection)
 
-        print(str(((index + 1) / maxFMRows) * 100) + '%')
+        #print(str(round(((index + 1) / len(df)) * 100)) + '%')
+        print(str(round(((index + 1) / rowNum * 100))) + '% | ' + str(index+1) + '/' + str(rowNum))
         #print("About " + str(((maxFMRows-index)*rateLimit)/60) + " minutes left!")
         time.sleep(rateLimit)
 
