@@ -11,10 +11,9 @@ importedCSV = "Apple Music Play Activity.csv"
 keepColumns =['Artists', 'Song Name', 'Album Name','Play Duration Milliseconds', 'Album Artist']
 scriptFile = os.path.dirname(os.path.abspath(__file__))
 maxFMRows = 57317
-rateLimit = 4
+rateLimit = 2
 def filterCSV(inputCSV):
     df = pd.read_csv(inputCSV)
-    rowNum = len(df)
     df = df[df['Media Duration In Milliseconds'] > 0]
     df = df[df['Event Type'] == 'PLAY_END']
     df = df[df['End Reason Type'] != 'NOT_APPLICABLE']
@@ -23,6 +22,7 @@ def filterCSV(inputCSV):
     newAlbums = []
     artistsValues = []
 
+    rowNum = len(df)
     for index, row in df.iterrows():
         artistValue = str(searchtunes.findArtist(row['Song Name'],row['Album Name']))
         artistsValues.append(artistValue)
