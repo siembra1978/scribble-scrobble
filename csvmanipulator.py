@@ -10,7 +10,7 @@ import datetime
 importedCSV = "Apple Music Play Activity.csv"
 keepColumns =['Artists', 'Song Name', 'Album Name','Play Duration Milliseconds', 'Album Artist']
 scriptFile = os.path.dirname(os.path.abspath(__file__))
-maxFMRows = 100
+maxFMRows = 3000
 rateLimit = 4
 
 def filterCSV(inputCSV):
@@ -32,7 +32,7 @@ def filterCSV(inputCSV):
         newAlbums.append(albumCorrection)
 
         print(str(((index + 1) / maxFMRows) * 100) + '%')
-        print("About " + str(((maxFMRows-index)*rateLimit)/60) + " minutes left!")
+        #print("About " + str(((maxFMRows-index)*rateLimit)/60) + " minutes left!")
         time.sleep(rateLimit)
 
     df['Artists'] = artistsValues
