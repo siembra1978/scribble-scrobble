@@ -24,19 +24,19 @@ def findArtist(song_title, album_title):
             return "No results found"
     except requests.exceptions.HTTPError as err:
         # Handle specific errors from HTTP responses (e.g., 404, 503)
-        return "No results found"
+        return "Error"
     except requests.exceptions.ConnectionError:
         # Handle errors like DNS failure, refused connection
-        return "No results found"
+        return "Error"
     except requests.exceptions.Timeout:
         # Handle timeouts
-        return "No results found"
+        return "Error"
     except requests.exceptions.RequestException as e:
         # Handle any requests-related errors
-        return "No results found"
+        return "Error"
     except Exception as e:
         # Handle other unforeseen errors
-        return "No results found"
+        return "Error"
 
 def findArtistDEBUG(song_title, album_title):
     if random.uniform(0, 100) >= .0125:

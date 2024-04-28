@@ -46,6 +46,9 @@ def filterCSV(inputCSV):
     subprocess.run('cls' if os.name == 'nt' else 'clear', shell=True)
 
     errors = 0
+    notFound = 0
+
+    timeInit = time.time()
 
     for index, row in df.iterrows():
 
@@ -59,8 +62,12 @@ def filterCSV(inputCSV):
         lastIteration[0] = now
 
         artistValue = str(searchtunes.findArtist(row['Song Name'], row['Album Name']))
-        if artistValue == 'No results found' or artistValue == 'Artist not found':
+
+        if artistValue == 'Error':
             errors += 1
+        elif artistValue == 'No results found' or artistValue == 'Artist not found':
+            notFound +=1
+
         artistsValues.append(artistValue)
 
         albumCorrection = str(row['Album Name'])
@@ -70,8 +77,9 @@ def filterCSV(inputCSV):
         percentComplete = str(round(((index + 1) / rowNum * 100))) + '%'
         indexedProgress = str(index+1) + '/' + str(rowNum)
         estimatedTime = str(datetime.timedelta(seconds = round((rowNum-(index+1))*avgTimeDiff)))
+        overallTimeElapsed = str(datetime.timedelta(seconds = round((now - timeInit))))
 
-        bar.suffix = percentComplete + '% | ' + indexedProgress + ' | ETA: ' + estimatedTime + ' | Errors: ' + str(errors) + ' | '
+        bar.suffix = percentComplete + '% | ' + indexedProgress + ' | ETA: ' + estimatedTime + ' | Time Elapsed: ' + overallTimeElapsed + ' | Artists Not Found: ' + str(notFound) + ' | Errors: ' + str(errors) + ' | '
         setTitle(percentComplete + ' [] ETA: ' + estimatedTime)
 
         bar.next()
@@ -94,6 +102,7 @@ def saveCSV(i, df):
 def spliceAndFinalize(df):
     df = df[df['Artists'] != 'Artist not found']
     df = df[df['Artists'] != 'No results found']
+    df = df[df['Artists'] != 'Error']
     chunks = [df[i:i + 3000] for i in range(0, df.shape[0], 3000)]
 
     for index, chunk in enumerate(chunks):
