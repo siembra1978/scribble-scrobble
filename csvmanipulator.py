@@ -5,6 +5,7 @@ import searchmusic
 import searchtunes
 import os
 import time
+from progress.bar import Bar
 import datetime
 
 importedCSV = "Apple Music Play Activity.csv"
@@ -12,6 +13,7 @@ keepColumns =['Artists', 'Song Name', 'Album Name','Play Duration Milliseconds',
 scriptFile = os.path.dirname(os.path.abspath(__file__))
 maxFMRows = 57317
 rateLimit = 2
+
 def filterCSV(inputCSV):
     df = pd.read_csv(inputCSV)
     df = df[df['Media Duration In Milliseconds'] > 0]
@@ -22,24 +24,32 @@ def filterCSV(inputCSV):
     newAlbums = []
     artistsValues = []
 
+    df = df.reset_index(drop=True)
     rowNum = len(df)
+
+    bar = Bar('Finding Artists:', max=rowNum)
+    os.system('clear')
+
+    errors = 0
+
     for index, row in df.iterrows():
-        artistValue = str(searchtunes.findArtist(row['Song Name'],row['Album Name']))
+        artistValue = str(searchtunes.findArtist(row['Song Name'], row['Album Name']))
+        if artistValue == 'No results found' or artistValue == 'Artist not found':
+            errors += 1
         artistsValues.append(artistValue)
-        #print(artistValue)
 
         albumCorrection = str(row['Album Name'])
         newAlbums.append(albumCorrection)
 
-        #print(str(round(((index + 1) / len(df)) * 100)) + '%')
-        print(str(round(((index + 1) / rowNum * 100))) + '% | ' + str(index+1) + '/' + str(rowNum))
-        #print("About " + str(((maxFMRows-index)*rateLimit)/60) + " minutes left!")
+        bar.suffix = str(round(((index + 1) / rowNum * 100))) + '%% | ' + str(index+1) + '/' + str(rowNum) + ' | ETA: ' + str(datetime.timedelta(seconds = round((rowNum-(index+1))*rateLimit))) + ' | Errors: ' + str(errors)
+        bar.next()
         time.sleep(rateLimit)
+
+    bar.finish()
 
     df['Artists'] = artistsValues
     df['Album Name'] = newAlbums
     df['Album Artist'] = ''
-    #df['Play Duration Milliseconds'] = newTimes
     df = df[keepColumns]
 
     spliceAndFinalize(df)
@@ -51,7 +61,7 @@ def saveCSV(i, df):
 def spliceAndFinalize(df):
     df = df[df['Artists'] != 'Artist not found']
     df = df[df['Artists'] != 'No results found']
-
+    print('Done!')
     chunks = [df[i:i + 3000] for i in range(0, df.shape[0], 3000)]
 
     for index, chunk in enumerate(chunks):

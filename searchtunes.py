@@ -1,4 +1,5 @@
 import requests
+import random
 
 
 def findArtist(song_title, album_title):
@@ -42,5 +43,10 @@ def findArtist(song_title, album_title):
         print("ruh roh")
         return "No results found"
 
+def findArtistDEBUG(song_title, album_title):
+    if random.uniform(0, 100) >= .0125:
+        return('The Placeholders ' + str(song_title)[0])
+    else:
+        return "No results found"
 
 
