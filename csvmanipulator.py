@@ -4,6 +4,7 @@ import pandas as pd
 import searchmusic
 import searchtunes
 import os
+import sys
 import subprocess
 import platform
 import time
@@ -22,6 +23,7 @@ def setTitle(title):
     else:
         sys.stdout.write(f"\x1b]2;{title}\x07")
         sys.stdout.flush()
+
 def filterCSV(inputCSV):
     df = pd.read_csv(inputCSV)
     df = df[df['Media Duration In Milliseconds'] > 0]
@@ -61,7 +63,7 @@ def filterCSV(inputCSV):
 
         lastIteration[0] = now
 
-        artistValue = str(searchtunes.findArtist(row['Song Name'], row['Album Name']))
+        artistValue = str(searchtunes.findArtistDEBUG(row['Song Name'], row['Album Name']))
 
         if artistValue == 'Error':
             errors += 1
@@ -84,7 +86,7 @@ def filterCSV(inputCSV):
 
         bar.next()
 
-        time.sleep(rateLimit)
+        #time.sleep(rateLimit)
 
     bar.finish()
 
@@ -94,8 +96,9 @@ def filterCSV(inputCSV):
     df = df[keepColumns]
 
     spliceAndFinalize(df)
+
 def saveCSV(i, df):
-    filename = f'outputs\data_chunk_{i + 1}.csv'
+    filename = f'outputs/data_chunk_{i + 1}.csv'
     saveToFile = os.path.join(scriptFile, filename)
     df.to_csv(saveToFile, header=False, index=False)
 
@@ -108,7 +111,7 @@ def spliceAndFinalize(df):
     for index, chunk in enumerate(chunks):
         saveCSV(index, chunk)
 
-filterCSV(importedCSV)
-print('Done!')
-setTitle("Done!")
-input('Press enter to exit: ')
+#filterCSV(importedCSV)
+#print('Done!')
+#setTitle("Done!")
+#input("erhm awkard: ")
