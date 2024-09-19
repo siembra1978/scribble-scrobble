@@ -16,6 +16,8 @@ keepColumns =['Artists', 'Song Name', 'Album Name','Play Duration Milliseconds',
 scriptFile = os.path.dirname(os.path.abspath(__file__))
 rateLimit = 2
 
+debug = True
+
 def setTitle(title):
     title = str(title)
     if platform.system() == "Windows":
@@ -63,7 +65,10 @@ def filterCSV(inputCSV):
 
         lastIteration[0] = now
 
-        artistValue = str(searchtunes.findArtistDEBUG(row['Song Name'], row['Album Name']))
+        if not debug:
+            artistValue = str(searchtunes.findArtist(row['Song Name'], row['Album Name']))
+        else:
+            artistValue = str(searchtunes.findArtistDEBUG(row['Song Name'], row['Album Name']))
 
         if artistValue == 'Error':
             errors += 1
