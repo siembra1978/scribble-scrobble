@@ -1,2 +1,5 @@
 *.sh
 *.csv
+.idea/
+__pycache__
+*.bat
